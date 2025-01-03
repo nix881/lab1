@@ -1,4 +1,4 @@
-a=# FastAPI Docker Application with MariaDB and Redis
+# FastAPI Docker Application with MariaDB and Redis
 
 This project is a Dockerized FastAPI application running on version 3.9. The application interacts with a MariaDB database and a Redis-based Valkey service. FastAPI is exposed on port 8000 and provides a Swagger UI documentation at `/docs`.
 
