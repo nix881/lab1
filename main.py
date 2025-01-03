@@ -5,20 +5,22 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, Session
 import valkey
 import threading
-
+import os
 
 app = FastAPI(title="Task Management System", description="A simple API", version="1.0")
 
 
 class ConfigManager:
     def __init__(self):
-        self.config_client = valkey.Valkey(host="localhost", port=6379)
+        self.config_client = valkey.Valkey(host=os.getenv("VALKEY_HOST"), port=os.getenv("VALKEY_PORT"))
 
     def get_config(self, key):
-        return self.config_client.get(key)
+        #return self.config_client.get(key)
+        return os.getenv(key)
 
 config_manager = ConfigManager()
-DATABASE_URL = config_manager.get_config('database_uri') or 'mysql+pymysql://user:password@localhost/task_db'
+DATABASE_URL = config_manager.get_config('DATABASE_URI') or 'mysql+pymysql://user:password@localhost/task_db'
+#DATABASE_URL = config_manager.get_config('database_uri') or 'mysql+pymysql://user:password@localhost/task_db'
 
 Base = declarative_base()
 engine = create_engine(DATABASE_URL)
@@ -79,9 +81,9 @@ class TaskResponse(BaseModel):
 
 class PubSubManager:
     def __init__(self):
-        self.client = valkey.Valkey(host="localhost", port=6379)
+        self.client = valkey.Valkey(host=os.getenv("VALKEY_HOST"), port=os.getenv("VALKEY_PORT"))
         self.pubsub = self.client.pubsub()
-        self.subscribed_channels = []
+        self.subscribed_channels = []git
 
     def publish(self, channel, message):
         self.client.publish(channel, message)
